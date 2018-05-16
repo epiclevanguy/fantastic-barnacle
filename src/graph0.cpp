@@ -20,7 +20,7 @@ void Graph::AddEdge(int i, int j)
 }
 
 void Graph::Calculate()
-{    
+{
     DEGREES.clear();
     LYAMBDA.clear();
     MU.clear();
@@ -29,21 +29,21 @@ void Graph::Calculate()
     BI.clear();
     CI.clear();
     AVTMS.clear();
-    for (int i = 0; i < MATRIX_V.size(); ++i)
+    for (size_t i = 0; i < MATRIX_V.size(); ++i)
     {
         int tmp = 0;
-        for (int j = 0; j < MATRIX_V[i].size(); ++j)
+        for (size_t j = 0; j < MATRIX_V[i].size(); ++j)
         {
             tmp += MATRIX_V[i][j];
         }
         DEGREES.insert(tmp);
     }
-    for (int i = 0; i < MATRIX_V.size(); ++i)
+    for (size_t i = 0; i < MATRIX_V.size(); ++i)
     {
-        for (int j = i + 1; j < MATRIX_V[i].size(); ++j)
+        for (size_t j = i + 1; j < MATRIX_V[i].size(); ++j)
         {
             int tmp = 0;
-            for (int k = 0; k < MATRIX_V.size(); ++k)
+            for (size_t k = 0; k < MATRIX_V.size(); ++k)
             {
                 if (MATRIX_V[i][k] == MATRIX_V[j][k])
                 {
@@ -68,9 +68,9 @@ void Graph::Calculate()
     for (int i = 1; i < DIAMETER + 1; ++i)
     {
         std::set<int> DB, DC;
-        for (int a = 0; a < MATRIX_V.size(); ++a)
+        for (size_t a = 0; a < MATRIX_V.size(); ++a)
         {
-            for (int b = 0; b < MATRIX_V.size(); ++b)
+            for (size_t b = 0; b < MATRIX_V.size(); ++b)
             {
                 if (DISTANCES[a][b] == i)
                 {
@@ -256,7 +256,7 @@ void Graph::GetDistances(std::vector<std::vector<int> > &M, std::vector<std::vec
                 }
             }
         }
-        for (int i = 0; i < d.size(); ++i)
+        for (size_t i = 0; i < d.size(); ++i)
         {
             Res[start][i] = d[i];
         }
@@ -285,14 +285,14 @@ long long Graph::GetDiameter(std::vector<std::vector<int> > &M)
             }
         }
     }
-    for (int i = 0; i < used.size(); ++i)
+    for (size_t i = 0; i < used.size(); ++i)
     {
         if (!used[i])
         {
             return -1;
         }
     }
-    for (int i = 0; i < d.size(); ++i)
+    for (size_t i = 0; i < d.size(); ++i)
     {
         if (res < d[i])
         {
@@ -358,6 +358,3 @@ void Graph::GenerateMaxClique(std::vector<std::vector<int>> &G, std::vector<int>
         }
     }
 }
-
-
-

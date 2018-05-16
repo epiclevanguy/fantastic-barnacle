@@ -1,40 +1,73 @@
 #ifndef GL_H
 #define GL_H
 
-#include <vector>
 
+#include <ostream>
+#include <vector>
+#include "ffield.h"
+#include "matrix.h"
+
+
+
+template<int N, int Q>
 class GL
 {
 public:
-    GL(int N, int Q);
-    void PrintGroupInfo();
-    void PrintGroupInfo(std::vector<int> &CE);
+    GL()
+    {
+        if(NeedInit)
+        {
+            NeedInit = false;
+            Matrix<RField<Q>, N> CurrM;
+            Init(CurrM, 0);
+        }
+    }
+
+    const Matrix<RField<Q>, N> & operator [](const size_t i)
+    {
+        return Group[i];
+    }
+
+    size_t Size()
+    {
+        return Group.size();
+    }
 
 private:
-    const int N, Q;
-    //DivTable add init in constructor
-    std::vector<std::vector<int>> AddTable, SubTable, MultTable, DivTable;
-    std::vector<int> AddReverse, MultReverse;
-    std::vector<std::vector<int> > Group;
+    static bool NeedInit;
+    static std::vector<Matrix<RField<Q>, N>> Group;    
+    void Init(Matrix<RField<Q>, N> &CurrM, int n)
+    {
+        if (n == N * N)
+        {
+            if (CurrM.GetDet() != 0)
+            {
+                Group.push_back(CurrM);
+            }
+            return;
+        }
+        for (int i = 0; i < Q; ++i)
+        {
+            CurrM[n] = i;
+            Init(CurrM, n + 1);
+        }
+    }
 
-    void GetGroup(std::vector<int> &CurrM, int n);
-    int GetDet(std::vector<int> M);
-    void GetConjugateClass(std::vector<int> &M, std::vector<std::vector<int> > &Res);
+    friend std::ostream & operator<< (std::ostream & Output, const GL<N, Q> &G)
+    {
+        Output << Group.size() << std::endl;
+        for(size_t i = 0 ; i < G.Group.size() ; ++i)
+        {
+            Output << G.Group[i] << std::endl;
+        }
+        return Output;
+    }
 
-    void MultiplyM(std::vector<int> &M1, std::vector<int> &M2, std::vector<int> &Res);
-    bool IsEq(std::vector<int> &M1, std::vector<int> &M2);
-    void GetInvM(std::vector<int> M, std::vector<int> &Res);
-
-
-    void GetGLMS(std::vector<int> &CurrM, int n, std::vector<std::vector<int>> &Res);
-    void GetGUMS(std::vector<std::vector<int>> &Res);
-    void GetGUDM(std::vector<int> & CurM, std::vector<std::vector<int>> & Gstrings, std::vector<std::vector<int>> &strings, int n, std::vector<std::vector<int>> & MS);
-    void GetGUStrings(std::vector<int> & CurStr, int n, std::vector<std::vector<int>> & Strings);
-    void GetGLCClass(std::vector<int> &M, std::vector<std::vector<int>> & Res);
-    void GetGUCClass(std::vector<int> &M, std::vector<std::vector<int>> & Res);
-    int BinarySearch(std::vector<int> &arr, int key);
 };
 
-
+template<int N, int Q>
+bool GL<N, Q>::NeedInit = true;
+template<int N, int Q>
+std::vector<Matrix<RField<Q>, N>> GL<N, Q>::Group;
 
 #endif // GL_H
