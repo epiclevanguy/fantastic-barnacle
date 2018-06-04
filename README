@@ -1,0 +1,9 @@
+COMPILEE
+$cd build
+cmake ..
+make
+
+UPDATE REPO
+git add ./*
+git commit -m "comment"
+git push origin master
