@@ -140,7 +140,7 @@ public:
             T rev;
             for(int j = k ; j < N ; ++j)
             {
-                if(A2[j * N + i] > 0)
+                if(A2[j * N + i] != 0)
                 {
                     k = j;
                     break;

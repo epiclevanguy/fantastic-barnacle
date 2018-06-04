@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <ostream>
+#include "graph.h"
 
 template<typename T>
 class Group
@@ -56,6 +57,25 @@ public:
             }
         }
         return Res;
+    }
+
+    void PrintGroupInfo()
+    {
+        Graph G;
+        G.SetSize(Elements.size());
+        for (size_t i = 0; i < Elements.size(); ++i)
+        {
+            for (size_t j = i + 1; j < Elements.size(); ++j)
+            {
+                if (Elements[i] * Elements[j] == Elements[j] * Elements[i])
+                {
+                    {
+                        G.AddEdge(i,j);
+                    }
+                }
+            }
+        }
+        G.PrintGraphInfo();
     }
 
 

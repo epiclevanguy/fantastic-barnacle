@@ -1,8 +1,6 @@
 #ifndef GU_H
 #define GU_H
 
-#include <iostream>
-
 #include <ostream>
 #include <vector>
 #include "specificalgorithms.h"
@@ -44,17 +42,6 @@ private:
         std::vector<CField<Q>> tmp1 (N);
         size_t tmp2[N];
         GetGUStrings(tmp1, 0, strings);
-        std::cout << strings.size() << std::endl;
-        for(size_t i = 0 ; i < strings.size() ; ++i)
-        {
-            for(int j = 0 ; j < strings[i].size() ; ++j)
-            {
-                std::cout << strings[i][j] << ' ';
-            }
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-        std::cout << std::endl;
         std::vector<std::vector<size_t>> gstrings(strings.size());
         for (size_t i = 0; i < strings.size(); ++i)
         {
@@ -70,14 +57,6 @@ private:
                     gstrings[i].push_back(j);
                 }
             }
-        }
-        for (size_t i = 0; i < gstrings.size(); ++i)
-        {
-            for (size_t j = 0; j < gstrings[i].size(); ++j)
-            {
-                std::cout << gstrings[i][j] << ' ';
-            }
-            std::cout << std::endl;
         }
         for (size_t i = 0; i < gstrings.size(); ++i)
         {

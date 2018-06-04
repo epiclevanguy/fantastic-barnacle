@@ -9,29 +9,27 @@ class Graph
 {
 public:
     Graph();
+    void Clear();
     void SetSize(int N);
     void AddEdge(int i, int j);
-    void Calculate();
-    void Print();
+    void PrintGraphInfo();
 
 
 
 
 private:
-    std::vector<std::vector<int>> MATRIX_V, DISTANCES, AVTMS;
+    std::vector<std::vector<int>> MATRIX_V, DISTANCES;
     std::set<int> DEGREES, LYAMBDA, MU;
     std::vector<int> Clique, CoClique;
-    std::vector<std::set<int>> BI, CI;
+    std::vector<std::set<int>> AI, BI, CI;
     long long DIAMETER;
 
     void GetDistances(std::vector<std::vector<int>> &M, std::vector<std::vector<int>> & Res);
     long long GetDiameter(std::vector<std::vector<int>> & M);
 
     void PrintAVTCount();
-
-    void GenerateMaxClique(std::vector<std::vector<int>> &G, std::vector<int> &candidates, std::vector<int> &not_c, std::vector<int> &compsub, std::vector<int> &res);
-
-
+    void Calculate();
+    void Print();
 
 
 };

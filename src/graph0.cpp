@@ -8,6 +8,17 @@ Graph::Graph()
 {
 }
 
+void Graph::Clear()
+{
+    for(size_t i = 0 ; i < MATRIX_V.size() ; ++i)
+    {
+        for(size_t j = 0 ; j < MATRIX_V.size() ; ++j)
+        {
+            MATRIX_V[i][j] = 0;
+        }
+    }
+}
+
 void Graph::SetSize(int N)
 {
     MATRIX_V.resize(N, std::vector<int> (N,0));
@@ -19,6 +30,32 @@ void Graph::AddEdge(int i, int j)
     MATRIX_V[i][j] = MATRIX_V[j][i] = 1;
 }
 
+void Graph::PrintGraphInfo()
+{
+    Calculate();
+    std::cout << "Г1" << std::endl;
+    Print();
+    Graph G;
+    G.SetSize(MATRIX_V.size());
+    for(long long i = 2 ; i <= DIAMETER ; ++i)
+    {
+        G.Clear();
+        for(size_t j = 0 ; j < MATRIX_V.size() ; ++j)
+        {
+            for(size_t k = j + 1 ; k < MATRIX_V.size() ; ++k)
+            {
+                if(DISTANCES[j][k] == i)
+                {
+                    G.AddEdge(j, k);
+                }
+            }
+        }
+        G.Calculate();
+        std::cout << "Г" << i << std::endl;
+        G.Print();
+    }
+}
+
 void Graph::Calculate()
 {
     DEGREES.clear();
@@ -26,9 +63,9 @@ void Graph::Calculate()
     MU.clear();
     Clique.clear();
     CoClique.clear();
+    AI.clear();
     BI.clear();
     CI.clear();
-    AVTMS.clear();
     for (size_t i = 0; i < MATRIX_V.size(); ++i)
     {
         int tmp = 0;
@@ -67,16 +104,20 @@ void Graph::Calculate()
 
     for (int i = 1; i < DIAMETER + 1; ++i)
     {
-        std::set<int> DB, DC;
+        std::set<int> DA, DB, DC;
         for (size_t a = 0; a < MATRIX_V.size(); ++a)
         {
             for (size_t b = 0; b < MATRIX_V.size(); ++b)
             {
                 if (DISTANCES[a][b] == i)
                 {
-                    std::set<int> tmpB, tmpC;
+                    std::set<int> tmpA, tmpB, tmpC;
                     for (int t = 0; t < MATRIX_V.size(); ++t)
                     {
+                        if (DISTANCES[b][t] == 1 && DISTANCES[a][t] == i)
+                        {
+                            tmpA.insert(t);
+                        }
                         if (DISTANCES[b][t] == 1 && DISTANCES[a][t] == (i + 1))
                         {
                             tmpB.insert(t);
@@ -86,18 +127,16 @@ void Graph::Calculate()
                             tmpC.insert(t);
                         }
                     }
+                    DA.insert(tmpA.size());
                     DB.insert(tmpB.size());
                     DC.insert(tmpC.size());
                 }
             }
         }
+        AI.push_back(DA);
         BI.push_back(DB);
         CI.push_back(DC);
     }
-
-
-
-
 
     bool **conn = new bool *[MATRIX_V.size()];
     for(int i = 0 ; i < MATRIX_V.size() ; ++i)
@@ -133,39 +172,6 @@ void Graph::Calculate()
         CoClique.push_back(qmax[i]);
     }
     delete [] qmax;
-
-    /*std::vector<std::vector<int>> G(MATRIX_V.size(), std::vector<int> (MATRIX_V.size()));
-    std::vector<int> condidates, not_c, compsub;
-    for(size_t i = 0 ; i < MATRIX_V.size() ; ++i)
-    {
-        condidates.push_back(i);
-    }
-    for(size_t i = 0 ; i < MATRIX_V.size() ; ++i)
-    {
-        for(size_t j = 0 ; j < MATRIX_V.size() ; ++j)
-        {
-            G[i][j] = (MATRIX_V[i][j] + 1) % 2;
-        }
-    }
-
-
-    GenerateMaxClique(MATRIX_V, condidates, not_c, compsub, Clique);
-    not_c.clear();
-    compsub.clear();
-    GenerateMaxClique(G, condidates, not_c, compsub, CoClique);
-
-    /*
-    for(int i = 0 ; i < MATRIX_V.size() ; ++i)
-    {
-        std::cout << "{";
-        for(int j = 0 ; j < MATRIX_V.size() ; ++j)
-        {
-            if(j < (MATRIX_V.size() - 1)) std::cout << MATRIX_V[i][j] << ", ";
-            else std::cout << MATRIX_V[i][j] << "}," << std::endl;
-        }
-    }*/
-
-    //GetAVT(CurrAvt, 0, Used);
 }
 
 void Graph::Print()
@@ -191,6 +197,17 @@ void Graph::Print()
     }
     std::cout << std::endl;
     std::cout << "Diameter" << std::endl << DIAMETER << std::endl;
+    std::cout << "Ai" << std::endl;
+    for (int i = 0; i < AI.size(); ++i)
+    {
+        std::cout << "[ ";
+        for (std::set<int>::const_iterator it1 = AI[i].begin(); it1 != AI[i].end(); ++it1)
+        {
+            std::cout << *it1 << "   ";
+        }
+        std::cout << " ]   ";
+    }
+    std::cout << std::endl;
     std::cout << "Bi" << std::endl;
     for (int i = 0; i < BI.size(); ++i)
     {
@@ -228,11 +245,6 @@ void Graph::Print()
     std::cout << std::endl;
 }
 
-
-
-
-
-
 void Graph::GetDistances(std::vector<std::vector<int> > &M, std::vector<std::vector<int> > &Res)
 {
     for (size_t start = 0; start < M.size(); ++start)
@@ -265,15 +277,15 @@ void Graph::GetDistances(std::vector<std::vector<int> > &M, std::vector<std::vec
 
 long long Graph::GetDiameter(std::vector<std::vector<int> > &M)
 {
-    std::queue<int> q;
+    std::queue<long long> q;
     q.push(0);
     std::vector<bool> used(M.size(), false);
-    std::vector<int> d(M.size(), 0);
+    std::vector<long long> d(M.size(), 0);
     used[0] = true;
-    int res = 0;
+    long long res = 0;
     while (!q.empty())
     {
-        int v = q.front();
+        long long v = q.front();
         q.pop();
         for (size_t i = 0; i < M[v].size(); ++i)
         {
@@ -300,61 +312,4 @@ long long Graph::GetDiameter(std::vector<std::vector<int> > &M)
         }
     }
     return res;
-}
-
-
-
-void Graph::GenerateMaxClique(std::vector<std::vector<int>> &G, std::vector<int> &candidates, std::vector<int> &not_c, std::vector<int> &compsub, std::vector<int> &res)
-{
-
-    std::vector<int> new_candidates, new_not_c, compsub_tmp = compsub;
-    for(size_t i = 0 ; i < candidates.size() ; ++i)
-    {
-        for(size_t j = 0 ; j < not_c.size() ; ++j)
-        {
-            bool flag = true;
-            for(size_t k = i ; k < candidates.size() ; ++k)
-            {
-                if(G[not_c[j]][candidates[k]] == 0)
-                {
-                    flag =false;
-                    break;
-                }
-            }
-            if(flag)
-            {
-                return;
-            }
-        }
-        compsub_tmp.push_back(candidates[i]);
-        new_candidates.clear();
-        new_not_c.clear();
-        for(size_t j = i + 1; j < candidates.size() ; ++j)
-        {
-            if(G[candidates[i]][candidates[j]] == 1)
-            {
-                new_candidates.push_back(candidates[j]);
-            }
-        }
-        for(size_t j = 0; j < not_c.size() ; ++j)
-        {
-            if(G[candidates[i]][not_c[j]] == 1)
-            {
-                new_not_c.push_back(not_c[j]);
-            }
-        }
-        if(new_candidates.size() == 0 && new_not_c.size() == 0)
-        {
-            if(compsub_tmp.size() > res.size())
-            {
-                res = compsub_tmp;
-            }
-        }
-        else
-        {
-            GenerateMaxClique(G, new_candidates, new_not_c, compsub_tmp, res);
-            compsub_tmp = compsub;
-            not_c.push_back(candidates[i]);
-        }
-    }
 }
