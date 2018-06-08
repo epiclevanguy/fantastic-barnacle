@@ -1,4 +1,4 @@
-COMPILEE
+COMPILE
 $cd build
 cmake ..
 make
