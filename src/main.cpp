@@ -56,10 +56,10 @@ int main()
     */
 
     {
-            Group<Matrix<CField<5>,3>> G;
-            GU<3,5> A;
-            Matrix<CField<5>,3> CE;
-            CE[0] = 4;
+            Group<Matrix<CField<3>,3>> G;
+            GU<3,3> A;
+            Matrix<CField<3>,3> CE;
+            CE[0] = 2;
             CE[1] = 0;
             CE[2] = 0;
             CE[3] = 0;
