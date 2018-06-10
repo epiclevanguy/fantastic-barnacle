@@ -148,6 +148,7 @@ void Graph::Calculate()
         }
     }
 
+
     Maxclique md1(conn, MATRIX_V.size(), 0.025);
     int *qmax, qaize;
     md1.mcqdyn(qmax, qaize);
@@ -172,6 +173,11 @@ void Graph::Calculate()
         CoClique.push_back(qmax[i]);
     }
     delete [] qmax;
+    for(size_t i = 0 ; i < MATRIX_V.size() ; ++i)
+    {
+        delete [] conn[i];
+    }
+    delete [] conn;
 }
 
 void Graph::Print()

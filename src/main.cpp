@@ -1,9 +1,25 @@
 #include <iostream>
 #include "group.h"
-#include "gu.h"
+#include "gl.h"
 
+#include "specificalgorithms.h"
 int main()
 {
+    /*{
+        Group<Matrix<RField<3>,2>> G;
+        GL<2,3> A;
+        Matrix<RField<3>,2> CE;
+        CE[0] = 1;
+        CE[1] = 0;
+        CE[2] = 0;
+        CE[3] = 2;
+        for(size_t i = 0 ; i < A.Size() ; ++i)
+        {
+            G.AddElement(A[i]);
+        }
+        G.PrintGroupInfo();
+        std::cout << G.GetConjugateClass(CE) << std::endl;
+    }
 
     /*
     {
@@ -34,11 +50,30 @@ int main()
         }
         G.PrintGroupInfo();
     }*/
-    /*{
-        Group<Matrix<CField<3>,3>> G;
-        GU<3,3> A;
-        Matrix<CField<3>,3> CE;
-        CE[0] = 2;
+    Group<Matrix<RField<5>,3>> G;
+    GL<3,5> A;
+    Matrix<RField<5>,3> CE;
+    CE[0] = 4;
+    CE[1] = 0;
+    CE[2] = 0;
+    CE[3] = 0;
+    CE[4] = 1;
+    CE[5] = 0;
+    CE[6] = 0;
+    CE[7] = 0;
+    CE[8] = 1;
+    for(size_t i = 0 ; i < A.Size() ; ++i)
+    {
+        G.AddElement(A[i]);
+    }
+    G.GetConjugateClass(CE).PrintGroupInfo();
+
+    /*
+    {
+        Group<Matrix<CField<5>,3>> G;
+        GU<3,5> A;
+        Matrix<CField<5>,3> CE;
+        CE[0] = 4;
         CE[1] = 0;
         CE[2] = 0;
         CE[3] = 0;
@@ -53,13 +88,13 @@ int main()
         }
         G.GetConjugateClass(CE).PrintGroupInfo();
     }
-    */
 
+/*
     {
-            Group<Matrix<CField<3>,3>> G;
-            GU<3,3> A;
-            Matrix<CField<3>,3> CE;
-            CE[0] = 2;
+            Group<Matrix<CField<5>,3>> G;
+            GU<3,5> A;
+            Matrix<CField<5>,3> CE;
+            CE[0] = 4;
             CE[1] = 0;
             CE[2] = 0;
             CE[3] = 0;

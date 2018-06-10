@@ -25,4 +25,26 @@ int BinarySearch(std::vector<T> &arr, T key)
     return -(1 + left);
 }
 
+
+template<typename T>
+T _SQRT(T a)
+{
+    int l = -1;
+    int r = a;
+    int m;
+    while (l < (r - 1))
+    {
+        m = (l + r) / 2;
+        if (m * m < a)
+        {
+            l = m;
+        }
+        else
+        {
+            r = m;
+        }
+    }
+    return r;
+}
+
 #endif // SPECIFICALGORITHMS_H

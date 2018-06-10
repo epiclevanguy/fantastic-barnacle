@@ -3,7 +3,7 @@
 
 
 #include <ostream>
-
+#include "specificalgorithms.h"
 
 template<int Q>
 class RField
@@ -272,6 +272,30 @@ public:
     {
         return CField(Conjugate[Number]);
     }
+    CField Get_II()
+    {
+        return CField(MultTable[Q][Q]);
+    }
+    friend const CField operator-(const CField& Right)
+    {
+        return CField(Right.AddReverse[Right.Number]);
+    }
+
+    friend bool operator==(const CField& Left, const CField& Right)
+    {
+        return Left.Number == Right.Number;
+    }
+
+    friend bool operator==(const CField& Left, const int& Right)
+    {
+        return Left.Number == Right;
+    }
+
+    friend std::ostream & operator<< (std::ostream & Output, const CField<Q> & N)
+    {
+        Output << Field[N.Number][0] << " + " << Field[N.Number][1] << "i";
+        return Output;
+    }
 private:
     int Number;
     static bool NeedInit;
@@ -343,17 +367,23 @@ private:
             }
         }
 
+        int _ii = 0;
+        for(int i = Q - 1 , j; i > 0 ; --i)
+        {
+            j = _SQRT(i);
+            if((j * j) % Q != i)
+            {
+                _ii = i;
+                break;
+            }
+        }
         for (int i = 0; i < Q * Q; ++i)
         {
             for (int j = 0; j < Q * Q; ++j)
             {
-                int tmp[2] = { Field[i][0] * Field[j][0] - Field[i][1] * Field[j][1], Field[i][0] * Field[j][1] + Field[i][1] * Field[j][0] };
+                int tmp[2] = { Field[i][0] * Field[j][0] + Field[i][1] * Field[j][1] * _ii , Field[i][0] * Field[j][1] + Field[i][1] * Field[j][0] };
                 for (int k = 0; k < 2; ++k)
                 {
-                    if (tmp[k] < 0)
-                    {
-                        tmp[k] = tmp[k] + (-tmp[k] / Q + 1) * Q;
-                    }
                     if (tmp[k] >= Q)
                     {
                         tmp[k] = tmp[k] - (tmp[k] / Q) * Q;
@@ -401,28 +431,6 @@ private:
         }
 
     }
-
-    friend const CField operator-(const CField& Right)
-    {
-        return CField(Right.AddReverse[Right.Number]);
-    }
-
-    friend bool operator==(const CField& Left, const CField& Right)
-    {
-        return Left.Number == Right.Number;
-    }
-
-    friend bool operator==(const CField& Left, const int& Right)
-    {
-        return Left.Number == Right;
-    }
-
-    friend std::ostream & operator<< (std::ostream & Output, const CField<Q> & N)
-    {
-        Output << Field[N.Number][0] << " + " << Field[N.Number][1] << "i";
-        return Output;
-    }
-
 };
 
 template<int Q>
